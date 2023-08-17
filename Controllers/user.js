@@ -26,8 +26,8 @@ export const register = async (req, res, next) => {
 }
 export const login = async (req, res, next) => {
     try {
-      const { Email, password } = req.body;
-      let user = await User.findOne({ Email }).select("+password");
+      const { email, password } = req.body;
+      let user = await User.findOne({ email }).select("+password");
       if (!user) {
       return res.status(400).json({
             success: false,

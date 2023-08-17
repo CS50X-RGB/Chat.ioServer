@@ -7,7 +7,7 @@ export const sendToken = (user, res, message, statusCode = 200) => {
         .status(statusCode)
         .cookie("ChatIo_Token", token, {
             httpOnly: true,
-            maxAge: 1 * 1000 * 60,
+            maxAge: 18 * 1000 * 60*60,
         })
         .json({
             success: true,

@@ -10,7 +10,7 @@ import UserRouter from './Router/user.js';
 import cookieParser from 'cookie-parser';
 //MiddleWare
 app.use(cors());
-app.use(cookieParser);
+app.use(cookieParser());
 app.use(express.json());
 const io = new Server(server, {
     cors: {
