@@ -4,10 +4,9 @@ import { Server } from 'socket.io';
 import cors from 'cors';
 import connectDb from './data/database1.js';
 import { config } from 'dotenv';
-import UserRouter from './Router/user.js'
+import UserRouter from './Router/user.js';
+import ChatRouter from './Router/message.js';
 import cookieParser from 'cookie-parser';
-
-
 
 const app = express();
 const server = http.createServer(app);
@@ -32,7 +31,7 @@ app.use(express.json());
 
 // Routes
 app.use('/api/v1.1/users', UserRouter);
-
+app.use('/api/v1.1/chat', ChatRouter);
 // Socket.io
 io.on('connection', (socket) => {
   console.log(`User connected ${socket.id}`);
