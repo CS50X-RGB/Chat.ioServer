@@ -47,15 +47,16 @@ export const login = async (req, res, next) => {
     }
 }
 
-export const logout = async(req,res)=>{
-    res.status(200).cookie('Token','',{
-        expires: new Date(Date.now()),
+export const logout = async (req, res) => {
+    res.clearCookie('chatioToken', {
+      secure: process.env.NODE_ENV === 'production', 
+      sameSite: 'strict', 
+      path: '/', 
     }).json({
-        sucess:true,
-        users : req.user,
-    })
-}
-
+      success: true,
+      user: req.user,
+    });
+  };
 export const getMyProfile = async(req,res)=>{
     res.status(200).json({
         success: true,
