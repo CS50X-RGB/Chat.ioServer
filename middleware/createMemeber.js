@@ -2,9 +2,8 @@ import Message from "../Models/message.js";
 
 export const createMessageChatid = async (req, res, next) => {
   try {
-    const { content, roomno, reciver_id } = req.body; // Extract properties from req.body
+    const { content, roomno, reciver_id } = req.body; 
     const user = req.user;
-
     const message = await new Message({
       sender: user._id,
       room: roomno,

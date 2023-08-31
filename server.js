@@ -18,12 +18,10 @@ const io = new Server(server, {
   },
 });
 app.use(cors({
-    origin: 'http://localhost:3000', // Set the allowed origin
-    methods: ["GET", "POST", "DELETE", "PUT"],
-    credentials: true,
-  }));
-;
-
+  origin: 'http://localhost:3000', // Set the allowed origin
+  methods: ["GET", "POST", "DELETE", "PUT"],
+  credentials: true,
+}));
 
 // Middlewares
 app.use(cookieParser());
@@ -32,12 +30,16 @@ app.use(express.json());
 // Routes
 app.use('/api/v1.1/users', UserRouter);
 app.use('/api/v1.1/chat', ChatRouter);
+
+
+const recivers = [];
+
 // Socket.io
 io.on('connection', (socket) => {
   console.log(`User connected ${socket.id}`);
   
   socket.on('send_message', (data) => {
-    // Emit the message to the specific room
+    console.log(`Sending message: ${data.message} to room: ${data.room}`);
     const messageData = {
       message: data.message,
       sender: true,
@@ -46,10 +48,15 @@ io.on('connection', (socket) => {
   });
 
   socket.on('leave_room', (room) => {
+    console.log(`User leaving room: ${room}`);
     socket.leave(room);
   });
 
   socket.on('join_room', (room) => {
+    console.log(`User id is ${socket.id}`);
+    console.log(`User joining room: ${room}`);
+    // Emit receiver_user_id event with the socket id
+    socket.emit('receiver_user_id', { receiverUserId: socket.id });
     socket.join(room);
   });
 });

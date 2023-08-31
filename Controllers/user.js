@@ -48,7 +48,7 @@ export const login = async (req, res, next) => {
 }
 
 export const logout = async (req, res) => {
-    res.clearCookie('chatioToken', {
+    res.clearCookie('ChatIo_Token', {
       secure: process.env.NODE_ENV === 'production', 
       sameSite: 'strict', 
       path: '/', 
