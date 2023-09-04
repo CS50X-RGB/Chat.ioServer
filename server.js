@@ -12,14 +12,14 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "https://rohanchatio-da8vgtug8-cs50x-rgb.vercel.app", // Change this to your client's origin
+    origin: "http://localhost:3000", // Change this to your client's origin
     methods: ["GET", "POST", "DELETE", "PUT"],
     credentials: true,
   },
 });
 app.use(
   cors({
-    origin: "https://rohanchatio-da8vgtug8-cs50x-rgb.vercel.app", // Set the allowed origin
+    origin: "http://localhost:3000", // Set the allowed origin
     methods: ["GET", "POST", "DELETE", "PUT"],
     credentials: true,
   })
