@@ -12,20 +12,14 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: [
-      "https://rohanchatio-da8vgtug8-cs50x-rgb.vercel.app",
-      "https://rohan-chat-io.firebaseapp.com"
-    ], // Change this to your client's origin
+    origin: "*", // Change this to your client's origin
     methods: ["GET", "POST", "DELETE", "PUT"],
     credentials: true,
   },
 });
 app.use(
   cors({
-    origin: [
-      "https://rohanchatio-da8vgtug8-cs50x-rgb.vercel.app",
-      "https://rohan-chat-io.firebaseapp.com"
-    ], // Change this to your client's origin // Set the allowed origin
+    origin: "*", // Change this to your client's origin // Set the allowed origin
     methods: ["GET", "POST", "DELETE", "PUT"],
     credentials: true,
   })
