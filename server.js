@@ -12,14 +12,14 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "https://rohanchatio.vercel.app", // Change this to your client's origin
+    origin: "https://chic-gumption-964552.netlify.app", // Change this to your client's origin
     methods: ["GET", "POST", "DELETE", "PUT"],
     credentials: true,
   },
 });
 app.use(
   cors({
-    origin: "https://rohanchatio.vercel.app", // Change this to your client's origin // Set the allowed origin
+    origin: "https://chic-gumption-964552.netlify.app", // Change this to your client's origin // Set the allowed origin
     methods: ["GET", "POST", "DELETE", "PUT"],
     credentials: true,
   })
