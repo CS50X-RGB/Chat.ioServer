@@ -9,6 +9,7 @@ export const sendToken = (user, res, message, statusCode = 200) => {
             httpOnly: true,
             maxAge: 18 * 1000 * 60*60*60,
             secure : true,  
+            sameSite: "None",
         })
         .json({
             success: true,
