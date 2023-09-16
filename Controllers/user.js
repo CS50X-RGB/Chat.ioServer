@@ -68,3 +68,33 @@ export const getMyProfile = async (req, res) => {
     user: req.user,
   });
 };
+
+export const getMyId = async (req, res) => {
+  try {
+    const { name } = req.params; 
+    const user = await User.findOne({ name }, "_id"); 
+    // Check if the user was found
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+    res.status(200).json({
+      success: true,
+      _id: user._id,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "An unexpected error occurred",
+    });
+  }
+};
+
+
+
+
+
+

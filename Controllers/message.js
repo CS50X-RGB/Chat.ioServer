@@ -1,13 +1,22 @@
-import Message from "../Models/message.js";
+import Message from '../Models/message.js';
 
 export const join = async (req, res, next) => {
   try {
     const { roomno } = req.body;
     const user = req.user;
-    const message = await new Message({
+    let message = await Message.findOne({
       sender: user._id,
       room: roomno,
     });
+      if (!message) {
+      message = new Message({
+        sender: user._id,
+        room: roomno,
+        content: [],
+        recivers: [],
+      });
+    }
+
     message.save();
     res.status(201).json({
       success: true,
@@ -21,38 +30,32 @@ export const join = async (req, res, next) => {
   }
 };
 
-export const createMessage = async (req, res, next) => {
+export const addMessage = async (req, res) => {
   try {
-    const { content, reciver_id } = req.body;
-    const user = req.user;
-    const message = await Message.findOne({
-      sender: user._id,
-      room: user.room,
+    const { id, roomno } = req.params;
+    const { content,recivers } = req.body;
+    let message = await Message.findOne({
+      sender: id,
+      room: roomno,
     });
-
     if (!message) {
       return res.status(404).json({
         success: false,
-        message: "Message not found",
+        message: 'Message not found or sender and room mismatch',
       });
     }
-
-    // Append the receiver_ids to the receivers array
-    message.receivers.push(...reciver_id);
-
-    // Append the new content to the content array
-    message.content.push({
-      sender: user._id,
-      message: content,
-    });
-
+    message.content.push(content);
+    message.reciver.push(recivers);
     await message.save();
 
     res.status(201).json({
       success: true,
-      message: content,
+      message: `${content} is sent`,
     });
   } catch (error) {
-    next(error);
+    res.status(500).json({
+      success: false,
+      message: 'An unexpected error occurred while sending the message',
+    });
   }
 };
