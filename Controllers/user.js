@@ -31,14 +31,14 @@ export const login = async (req, res, next) => {
     if (!user) {
       return res.status(400).json({
         success: false,
-        message: "Email already exists",
+        message: "Email and password are not correct",
       });
     }
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({
         success: false,
-        message: "Email already exists",
+        message: "Email and password are not correct",
       });
     }
     sendToken(user, res, `${user.name} welcome !! to RohanChat.io`, 201);
