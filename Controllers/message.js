@@ -78,35 +78,36 @@ export const addMessage = async (req, res) => {
 
 
 
-export const getRecivers = async (req, res) => {
+export const getContent = async (req, res) => {
   try {
-    const { roomno } = req.params; // Remove 'id' since it's not needed
-    const user = req.user;
-    
-    // Find all messages in the specified room where the user is the sender
+    const { roomno,id } = req.params;
     const messages = await Message.find({
       room: roomno,
-      sender: user._id,
+      sender: id,
     });
 
     if (!messages || messages.length === 0) {
       return res.status(404).json({
         success: false,
-        message: 'No messages found for this room and sender',
+        message: 'No messages in this room',
       });
     }
 
-    // Extract the 'content' field from each message
-    const contentArray = messages.map((message) => message.content).flat();
+
+    const contentArray = messages.map((message) =>
+    message.content.map((contentItem) => contentItem)
+  );
+
+  const flattenedContentArray = contentArray.flat();
 
     res.status(200).json({
       success: true,
-      content: contentArray,
+      content: flattenedContentArray,
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: 'An unexpected error occurred while fetching content',
+      content: 'An unexpected error occurred while fetching content',
     });
   }
 }
