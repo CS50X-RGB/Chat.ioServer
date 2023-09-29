@@ -4,6 +4,7 @@ const messageSchema = new mongoose.Schema({
   room: {
     type: mongoose.Schema.Types.Mixed,
     required: true,
+    unique: [true,"Room number should be unique"],
   },
   sender: {
     type: mongoose.Schema.Types.ObjectId,

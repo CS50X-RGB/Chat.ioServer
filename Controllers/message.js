@@ -5,7 +5,6 @@ export const join = async (req, res, next) => {
     const { roomno } = req.body;
     const user = req.user;
     let message = await Message.findOne({
-      sender: user._id,
       room: roomno,
     });
       if (!message) {
@@ -80,10 +79,9 @@ export const addMessage = async (req, res) => {
 
 export const getContent = async (req, res) => {
   try {
-    const { roomno,id } = req.params;
+    const { roomno } = req.params;
     const messages = await Message.find({
       room: roomno,
-      sender: id,
     });
 
     if (!messages || messages.length === 0) {

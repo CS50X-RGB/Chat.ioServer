@@ -5,5 +5,5 @@ const router = express.Router();
 
 router.post('/join',isAuth,join);
 router.post('/chat/:id/:roomno',isAuth,addMessage);
-router.get('/chat/:roomno/:id',isAuth,getContent);
+router.get('/chat/:roomno',isAuth,getContent);
 export default router;
