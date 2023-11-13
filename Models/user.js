@@ -2,23 +2,26 @@ import mongoose from "mongoose";
 
 const schema = new mongoose.Schema({
   name: {
-    type:String,
-    required:true,
+    type: String,
+    required: true,
+  },
+  profileImage: {
+    type: String,
   },
   email: {
-    type:String,
-    required:true,
-    unique:true,
+    type: String,
+    required: true,
+    unique: true,
   },
   password: {
     type: String,
-    required:true,
+    required: true,
     select: false,
   },
-  createdAt :{
-    type:Date,
-    default:Date.now,
-  }
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 const User = mongoose.model("User", schema);

@@ -5,7 +5,7 @@ import { sendToken } from "../utils/features.js";
 export const register = async (req, res, next) => {
   console.log("i am called");
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password,image } = req.body;
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({
@@ -18,6 +18,7 @@ export const register = async (req, res, next) => {
       name,
       email,
       password: hash,
+      profileImage: image
     });
     sendToken(user, res, `${user.name} welcome !! to RohanChat.io`, 201);
   } catch (err) {

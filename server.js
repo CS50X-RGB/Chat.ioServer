@@ -27,7 +27,7 @@ app.use(
 
 // Middlewares
 app.use(cookieParser());
-app.use(express.json());
+app.use(express.json({ limit: '30mb' }));
 
 // Routes
 app.use("/api/v1.1/users", UserRouter);

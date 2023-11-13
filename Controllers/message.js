@@ -1,4 +1,3 @@
-// messageController.js
 import Message from '../Models/message.js';
 
 export const join = async (req, res, next) => {
