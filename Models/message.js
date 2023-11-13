@@ -1,10 +1,10 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const messageSchema = new mongoose.Schema({
   room: {
     type: mongoose.Schema.Types.Mixed,
     required: true,
-    unique: [true,"Room number should be unique"],
+    unique: true,  // Corrected syntax for unique option
   },
   sender: {
     type: mongoose.Schema.Types.ObjectId,
@@ -19,7 +19,7 @@ const messageSchema = new mongoose.Schema({
   ],
   content: [
     {
-      senderName:{
+      senderName: {
         type: String,
         required: true,
       },
