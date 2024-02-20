@@ -8,6 +8,9 @@ const schema = new mongoose.Schema({
   profileImage: {
     type: String,
   },
+  user_token:{
+    type: String,
+  },
   email: {
     type: String,
     required: true,
@@ -17,6 +20,9 @@ const schema = new mongoose.Schema({
     type: String,
     required: true,
     select: false,
+  },
+  refresh_user_token:{
+    type: String,
   },
   createdAt: {
     type: Date,

@@ -48,7 +48,7 @@ export const addMessage = async (req, res) => {
   try {
     const { id, roomno } = req.params;
     const { content, receivers } = req.body;
-
+    console.log(content);
     let message = await Message.findOne({
       room: roomno,
     });
@@ -60,9 +60,11 @@ export const addMessage = async (req, res) => {
       });
     }
 
-    if (!message.sender && message.room) {
+    if (message.sender !==  id && message.room) {
+      console.log("Hi" + message.sender);
       // If the sender is not present but the room exists, update the sender
       message.sender = id;
+      console.log(message.sender);
       console.log('Updated sender...', message.sender);
     }
 
@@ -123,6 +125,7 @@ export const getContent = async (req, res) => {
       success: true,
       content: flattenedContentArray,
     });
+
   } catch (error) {
     res.status(500).json({
       success: false,

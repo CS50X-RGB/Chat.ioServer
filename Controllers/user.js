@@ -1,6 +1,7 @@
 import User from "../Models/user.js";
 import bcrypt from "bcrypt";
 import { sendToken } from "../utils/features.js";
+import sendEmail from "../utils/sendMail.js";
 
 export const register = async (req, res, next) => {
   console.log("i am called");
@@ -14,13 +15,23 @@ export const register = async (req, res, next) => {
       });
     }
     const hash = await bcrypt.hash(password, 10);
-    let user = await User.create({
+    const user = await User.create({
       name,
       email,
       password: hash,
-      profileImage: image
+      profileImage: image,
     });
-    sendToken(user, res, `${user.name} welcome !! to RohanChat.io`, 201);
+    const token = sendToken(user, res, `${user.name} welcome !! to RohanChat.io`, 201);
+    user.user_token = token;
+    user.refresh_user_token = undefined;
+    await user.save();
+    sendEmail(user.email, `<h1>Welcome ${user.name} to RohanChat.io.
+    You can now use our service create Rooms and chat annomosuly  with anyone..</h1>`);
+    return res.status(200).json({
+      success: true,
+      message: `${user.name} Welcome to RohanChat.io`,
+      token: user.user_token
+    });
   } catch (err) {
     next(err);
   }
@@ -42,7 +53,12 @@ export const login = async (req, res, next) => {
         message: "Email and password are not correct",
       });
     }
-    sendToken(user, res, `${user.name} welcome !! to RohanChat.io`, 201);
+    const token = sendToken(user, res, `${user.name} welcome !! to RohanChat.io`, 201);
+    return res.status(200).json({
+      success: true,
+      message: `${user.name} Welcome to RohanChat.io`,
+      token: token,
+    })
   } catch (error) {
     next(error);
   }
