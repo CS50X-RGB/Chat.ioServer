@@ -5,7 +5,7 @@ import { sendToken } from "../utils/features.js";
 export const register = async (req, res, next) => {
   console.log("i am called");
   try {
-    const { name, email, password,image } = req.body;
+    const { name, email, password, image } = req.body;
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({
@@ -72,9 +72,8 @@ export const getMyProfile = async (req, res) => {
 
 export const getMyId = async (req, res) => {
   try {
-    const { name } = req.params; 
-    const user = await User.findOne({ name }, "_id"); 
-    // Check if the user was found
+    const { name } = req.params;
+    const user = await User.findOne({ name }, "_id");
     if (!user) {
       return res.status(404).json({
         success: false,
@@ -86,6 +85,31 @@ export const getMyId = async (req, res) => {
       _id: user._id,
     });
   } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "An unexpected error occurred",
+    });
+  }
+};
+export const getMyData = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await User.findOne({
+      _id: id
+    });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      user,
+    });
+  } catch (error) {
     console.error(error);
     res.status(500).json({
       success: false,
@@ -93,7 +117,3 @@ export const getMyId = async (req, res) => {
     });
   }
 };
-
-
-
-
