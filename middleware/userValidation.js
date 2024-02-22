@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 const userSchema = z.object({
         name: z.string().min(1, { message: 'Name cant be empty' }),
-        profilePic: z.string().min(1),
+        image: z.string().min(1),
         user_token: z.string().optional(),
         email: z.string().email(),
         password: z.string().min(6, { message: 'Password should be at least 6 characters' }),
@@ -11,24 +11,20 @@ const userSchema = z.object({
 });
 
 const passwordSchema = z.object({
-        password: z.string().min(6, { message: 'Password should be at least 6 characters' })
+        newpass: z.string().min(6)
 });
 
 export const validatePassword = (req, res, next) => {
-        const { password } = req.body;
+        const { newpass } = req.body;
         try {
-                passwordSchema.parse({ password });
-                next();
+                passwordSchema.parse({ newpass });
+                console.log("Ho gym Password");
+                return next();
         } catch (error) {
-                const err = {
-                        path: 'password',
-                        message: error.errors[0].message
-                };
-                console.error(err);
+                console.error(error);
                 return res.status(400).json({
                         success: false,
-                        message: 'Invalid password',
-                        errors: [err]
+                        message: 'Password should be at least 6 characters',
                 });
         };
 }
@@ -37,7 +33,7 @@ export const validateUserData = (req, res, next) => {
         const userData = req.body;
         try {
                 userSchema.parse(userData);
-                next();
+                return next();
         } catch (error) {
                 const err = [];
                 for (const validationError of error.errors) {
@@ -48,10 +44,10 @@ export const validateUserData = (req, res, next) => {
                         err.push(obj);
                 }
                 console.error('Validation error:', err);
-                res.status(400).json({
+                return res.status(400).json({
                         success: false,
                         message: 'Invalid user data',
-                        errors: err.map(error => error.message)
+                        errors: err,
                 });
         }
 };

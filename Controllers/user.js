@@ -2,6 +2,7 @@ import User from "../Models/user.js";
 import bcrypt from "bcrypt";
 import { sendToken } from "../utils/features.js";
 import sendEmail from "../utils/sendMail.js";
+import generateRandomToken from "../utils/generateRandomToken.js";
 
 export const register = async (req, res, next) => {
   try {
@@ -22,19 +23,19 @@ export const register = async (req, res, next) => {
     });
     const token = sendToken(user, res, `${user.name} welcome !! to RohanChat.io`, 201);
     user.user_token = token;
-    user.refresh_user_token = undefined;
+    user.refresh_user_token = null;
     await user.save();
+    console.log("User registered successfully.");
     sendEmail(user.email, `<h1>Welcome ${user.name} to RohanChat.io.
-    You can now use our service create Rooms and chat annomosuly  with anyone..</h1>`);
-    return res.status(200).json({
-      success: true,
-      message: `${user.name} Welcome to RohanChat.io`,
-      token: user.user_token
-    });
+    You can now use our service create Rooms and chat anonymously  with anyone..</h1>`);
+    console.log(`Email sent: ${user.email}`);
   } catch (err) {
+    console.error(err);
     next(err);
   }
 };
+
+
 export const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
@@ -52,31 +53,41 @@ export const login = async (req, res, next) => {
         message: "Email and password are not correct",
       });
     }
-    const token = sendToken(user, res, `${user.name} welcome !! to RohanChat.io`, 201);
-    return res.status(200).json({
-      success: true,
-      message: `${user.name} Welcome to RohanChat.io`,
-      token: token,
-    })
+    const token = sendToken(user, res, `${user.name} Welcome again`, 200);
+    user.user_token = token;
+    await user.save();
   } catch (error) {
     next(error);
   }
 };
 
-export const logout = async (req, res) => {
+export const logout = async (req, res, next) => {
   console.log("LOGOUT called");
-
-  res
-    .clearCookie("ChatIo_Token", {
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      path: "/",
-    })
-    .json({
-      success: true,
-      user: req.user,
+  try {
+    const response = await User.findByIdAndUpdate(
+      req.user._id, {
+      user_token: null,
+    }
+    );
+    console.log(response.user_token);
+    res
+      .clearCookie("ChatIo_Token", {
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+        path: "/",
+      })
+      .json({
+        success: true,
+        user: req.user,
+      });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      message: "An unexpected error occurred",
     });
-};
+  }
+}
 
 export const getMyProfile = async (req, res) => {
   res.status(200).json({
@@ -112,7 +123,6 @@ export const getMyData = async (req, res) => {
     const user = await User.findOne({
       _id: id
     });
-
     if (!user) {
       return res.status(404).json({
         success: false,
@@ -120,13 +130,13 @@ export const getMyData = async (req, res) => {
       });
     }
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       user,
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: "An unexpected error occurred",
     });
@@ -136,21 +146,23 @@ export const ResetPassword = async (req, res) => {
   try {
     const { resetIdentifier } = req.params;
     const { newpass } = req.body;
-
+    console.log(newpass);
     const user = await User.findOne({
       refresh_user_token: resetIdentifier
     });
-    console.log(user);
     if (!user) {
       return res.status(404).json({
         success: false,
         message: "Invalid or expired reset link.Please try again"
       });
     }
-    user.password - await bcrypt.hash(newpass, 10);
+    user.password = await bcrypt.hash(newpass, 10);
     user.refresh_user_token = undefined
-    const resp = await user.save();
-    console.log(resp);
+    await user.save();
+    return res.status(200).json({
+      success: true,
+      message: "Password updated successfully",
+    });
   } catch (error) {
     console.error(error);
     return res.status(500).json({
@@ -170,8 +182,7 @@ export const ForgetPassword = async (req, res) => {
       });
     const resetIdentifier = generateRandomToken();
     user.refresh_user_token = resetIdentifier;
-    const res = await user.save();
-    console.log(res);
+    await user.save();
     const resetLink = `http://localhost:3000/resetPassword/${resetIdentifier}`
     sendEmail(user.email, `Click the following link to reset your password : ${resetLink}`);
     return res.status(200).json({
@@ -217,10 +228,10 @@ export const UpdateDetails = async (req, res, next) => {
       },
     });
   } catch (error) {
-      console.log(error);
-      return res.status(500).json({
-        success: false,
-        message: `Internal server error ${error}`,
-      })
+    console.log(error);
+    return res.status(500).json({
+      success: false,
+      message: `Internal server error ${error}`,
+    })
   }
 }

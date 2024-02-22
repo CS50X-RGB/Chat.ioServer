@@ -7,6 +7,7 @@ import { config } from "dotenv";
 import UserRouter from "./Router/user.js";
 import ChatRouter from "./Router/message.js";
 import cookieParser from "cookie-parser";
+import HttpError from "./middleware/error.js";
 
 const app = express();
 const server = http.createServer(app);
@@ -73,10 +74,20 @@ app.get("/", (req, res) => {
   res.send("<h2>ROHAN CHAT .io</h2>");
 });
 
+app.use((err, req, res, next) => {
+  console.error(err);
+  if (err instanceof HttpError) {
+    console.log("I am here ");
+    return res.status(err.statusCode).json({ success: false, message: err.message });
+  }
+  return res.status(500).json({ success: false, message: "Internal server error" });
+});
+
 // Start the server
 server.listen(3001, () => {
   console.log(`Listening to 3001`);
 });
+
 
 // Connect to the database
 connectDb();
