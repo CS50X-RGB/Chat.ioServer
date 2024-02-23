@@ -96,6 +96,27 @@ export const getMyProfile = async (req, res) => {
   });
 };
 
+export const getMyId = async (req, res) => {
+  try {
+    const { name } = req.params;
+    const user = await User.findOne({ name }, "_id");
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+    res.status(200).json({
+      success: true,
+      _id: user._id,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "An unexpected error occurred",
+    });
+  }
+};
 export const getMyData = async (req, res) => {
   try {
     const { id } = req.params;
