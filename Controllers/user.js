@@ -143,6 +143,7 @@ export const getMyData = async (req, res) => {
   }
 };
 export const ResetPassword = async (req, res) => {
+  console.log(`Hi there! ,${req.body}`);
   try {
     const { resetIdentifier } = req.params;
     const { newpass } = req.body;
@@ -229,9 +230,6 @@ export const UpdateDetails = async (req, res, next) => {
     });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({
-      success: false,
-      message: `Internal server error ${error}`,
-    })
+    next(error);
   }
 }

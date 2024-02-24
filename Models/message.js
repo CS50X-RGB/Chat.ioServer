@@ -4,7 +4,7 @@ const messageSchema = new mongoose.Schema({
   room: {
     type: mongoose.Schema.Types.Mixed,
     required: true,
-    unique: true,  // Corrected syntax for unique option
+    unique: true, 
   },
   sender: {
     type: mongoose.Schema.Types.ObjectId,
