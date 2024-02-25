@@ -38,7 +38,7 @@ export const validateRoom = (req, res, next) => {
                 return res.status(400).json({
                         success: false,
                         message: 'Invalid Room no',
-                        erros : err
+                        erros: err
                 });
         }
 }
@@ -46,7 +46,7 @@ export const validatePassword = (req, res, next) => {
         const { newpass } = req.body;
         try {
                 passwordSchema.parse({ newpass });
-                return next();
+                next();
         } catch (error) {
                 console.error(error);
                 return res.status(400).json({
@@ -55,35 +55,56 @@ export const validatePassword = (req, res, next) => {
                 });
         };
 }
-const isValidEmail = (value) => value.includes("@");
-const updateUserSchema = z.object({
-        name: z.string().min(3, { message: 'Name cant be of 2 charcs' }).optional(),
-        email: z.string().optional().refine(isValidEmail, { message: "Email must contain @" }),
-        profilePic: z.string().optional(),
-});
+
+const isValidEmail = (value) => typeof value === "string" && value.includes("@");
 
 export const validateUserDataUpdate = (req, res, next) => {
         const userData = req.body;
+        console.log(userData);
+
+        const updateSchemaFields = {};
+
+        if (userData.name !== undefined) {
+                updateSchemaFields.name = z.string().min(3, { message: "Name can't be less than 3 characters" });
+        }
+
+        if (userData.email !== undefined) {
+                updateSchemaFields.email = z.string().refine(isValidEmail, { message: "Email must contain @" });
+        }
+
+        if (userData.profilePic !== undefined) {
+                updateSchemaFields.profilePic = z.string();
+        }
+
+        const updateUserSchema = z.object(updateSchemaFields).nonstrict();
+
         try {
                 updateUserSchema.parse(userData);
-                return next();
+                console.log("Data is valid:", userData);
+                next();
         } catch (error) {
                 const err = [];
-                for (const validationError of error.errors) {
-                        const obj = {
-                                path: validationError.path[0],
-                                message: validationError.message
-                        };
-                        err.push(obj);
+                console.log("Validation error:", error);
+                if (error.errors) {
+                        for (const validationError of error.errors) {
+                                const obj = {
+                                        path: validationError.path[0],
+                                        message: validationError.message,
+                                };
+                                err.push(obj);
+                        }
+                } else {
+                        err.push({ message: "Unknown validation error" });
                 }
-                console.error('Validation error:', err);
+                console.error("Validation error:", err);
                 return res.status(400).json({
                         success: false,
-                        message: 'Invalid user data',
+                        message: "Invalid user data",
                         errors: err,
                 });
         }
 };
+
 
 export const validateUserData = (req, res, next) => {
         const userData = req.body;
@@ -107,4 +128,4 @@ export const validateUserData = (req, res, next) => {
                 });
         }
 };
-export default { validateUserData, validatePassword, validateUserDataUpdate,validateRoom };
+export default { validateUserData, validatePassword,validateUserDataUpdate, validateRoom };
