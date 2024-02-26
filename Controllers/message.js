@@ -60,7 +60,7 @@ export const addMessage = async (req, res) => {
       });
     }
 
-    if (message.sender !==  id && message.room) {
+    if (message.sender !== id && message.room) {
       console.log("Hi" + message.sender);
       // If the sender is not present but the room exists, update the sender
       message.sender = id;
@@ -135,16 +135,29 @@ export const getContent = async (req, res) => {
 };
 
 export const countData = async (req, res) => {
+  console.log(req.params);
   try {
     const { userId } = req.params;
     const data = await Message.find({
-      sender: userId,
+      receiver: { $in: [userId] },
     });
+    const roomUserMap = {};
+    data.forEach(message => {
+      message.content.forEach(content => {
+        const { senderName } = content;
+        const room = message.room;
 
+        if (!roomUserMap[room]) {
+          roomUserMap[room] = new Set();
+        }
+        roomUserMap[room].add(senderName);
+      });
+    })
     res.status(200).json({
       success: true,
       message: data,
-      userId: userId,  // Include user ID in the response
+      main: roomUserMap,
+      userId: userId,  
     });
     console.log(data);
   } catch (error) {
