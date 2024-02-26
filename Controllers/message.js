@@ -141,12 +141,12 @@ export const countData = async (req, res) => {
     const data = await Message.find({
       receiver: { $in: [userId] },
     });
+
     const roomUserMap = {};
     data.forEach(message => {
       message.content.forEach(content => {
         const { senderName } = content;
         const room = message.room;
-
         if (!roomUserMap[room]) {
           roomUserMap[room] = new Set();
         }
