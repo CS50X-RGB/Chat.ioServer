@@ -13,14 +13,14 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000", // Change this to your client's origin
+    origin: "https://65dcd5ad12ff510d4104b374--delicate-meerkat-f0be06.netlify.app", // Change this to your client's origin
     methods: ["GET", "POST", "DELETE", "PUT"],
     credentials: true,
   },
 });
 app.use(
   cors({
-    origin: "http://localhost:3000", // Set the allowed origin
+    origin: "https://65dcd5ad12ff510d4104b374--delicate-meerkat-f0be06.netlify.app", // Set the allowed origin
     methods: ["GET", "POST", "DELETE", "PUT"],
     credentials: true,
   })
