@@ -62,14 +62,21 @@ export const login = async (req, res, next) => {
 };
 
 export const logout = async (req, res, next) => {
-  console.log("LOGOUT called");
   try {
+    console.log(req.user._id);
     const response = await User.findByIdAndUpdate(
-      req.user._id, {
-      user_token: null,
-    }
+      req.user._id, 
+      {
+        user_token: null,
+        refresh_user_token: null
+      },
+      { new: true }
     );
-    console.log(response.user_token);
+    response.markModified('user_token');
+    response.markModified('refresh_user_token');
+    await response.save();
+
+    console.log(response);
     res
       .clearCookie("ChatIo_Token", {
         secure: process.env.NODE_ENV === "production",
@@ -78,7 +85,7 @@ export const logout = async (req, res, next) => {
       })
       .json({
         success: true,
-        user: req.user,
+        user: response,
       });
   } catch (error) {
     console.error(error);
@@ -88,6 +95,7 @@ export const logout = async (req, res, next) => {
     });
   }
 }
+
 
 export const getMyProfile = async (req, res) => {
   res.status(200).json({

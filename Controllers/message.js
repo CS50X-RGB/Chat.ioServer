@@ -1,4 +1,5 @@
 import Message from '../Models/message.js';
+import User from '../Models/user.js';
 
 export const join = async (req, res, next) => {
   try {
@@ -135,7 +136,6 @@ export const getContent = async (req, res) => {
 };
 
 export const countData = async (req, res) => {
-  console.log(req.params);
   try {
     const { userId } = req.params;
     const data = await Message.find({
@@ -144,22 +144,38 @@ export const countData = async (req, res) => {
 
     const roomUserMap = {};
     data.forEach(message => {
-      message.content.forEach(content => {
-        const { senderName } = content;
-        const room = message.room;
-        if (!roomUserMap[room]) {
-          roomUserMap[room] = new Set();
+      const room = message.room;
+      const { receiver } = message;
+      if (!roomUserMap[room]) {
+        roomUserMap[room] = receiver;
+      }
+    });
+
+    const flatArray = await Promise.all(Object.entries(roomUserMap).map(async ([room, userSet]) => {
+      const users = [...userSet];
+      const finUsers = [];
+      for (let i = 0; i < users.length; i++) {
+        const user = await User.findById(users[i]);
+        if (user) {
+          finUsers.push(user.name);
         }
-        roomUserMap[room].add(senderName);
-      });
-    })
-    res.status(200).json({
+      }
+      const currentIdx = finUsers.indexOf(req.user.name);
+      if (currentIdx !== -1) {
+        finUsers.splice(currentIdx, 1, "YOU");
+      }
+      return {
+        room,
+        finUsers,
+      };
+    }));
+
+    return res.status(200).json({
       success: true,
       message: data,
-      main: roomUserMap,
-      userId: userId,  
+      main: flatArray,
+      userId: userId,
     });
-    console.log(data);
   } catch (error) {
     res.status(404).json({
       success: false,
@@ -167,3 +183,4 @@ export const countData = async (req, res) => {
     });
   }
 };
+

@@ -13,14 +13,14 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "https://65dcd81de814420cc3a4ae4e--endearing-gumption-15fa6d.netlify.app",
+    origin: "http://localhost:3000",
     methods: ["GET", "POST", "DELETE", "PUT"],
     credentials: true,
   },
 });
 app.use(
   cors({
-    origin: "https://65dcd81de814420cc3a4ae4e--endearing-gumption-15fa6d.netlify.app",
+    origin: "http://localhost:3000",
     methods: ["GET", "POST", "DELETE", "PUT"],
     credentials: true,
   })
