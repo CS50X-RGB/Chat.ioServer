@@ -13,14 +13,14 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: "https://luxury-kitten-419ac4.netlify.app",
     methods: ["GET", "POST", "DELETE", "PUT"],
     credentials: true,
   },
 });
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: "https://luxury-kitten-419ac4.netlify.app",
     methods: ["GET", "POST", "DELETE", "PUT"],
     credentials: true,
   })

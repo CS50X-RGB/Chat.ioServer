@@ -192,7 +192,7 @@ export const ForgetPassword = async (req, res) => {
     const resetIdentifier = generateRandomToken();
     user.refresh_user_token = resetIdentifier;
     await user.save();
-    const resetLink = `http://localhost:3000/resetPassword/${resetIdentifier}`
+    const resetLink = `https://luxury-kitten-419ac4.netlify.app/resetPassword/${resetIdentifier}`
     sendEmail(user.email, `Click the following link to reset your password : ${resetLink}`);
     return res.status(200).json({
       success: true,
