@@ -1,3 +1,4 @@
+
 import jwt from 'jsonwebtoken';
 
 export const sendToken = (user, res, message, statusCode = 200) => {
@@ -7,8 +8,8 @@ export const sendToken = (user, res, message, statusCode = 200) => {
         .status(statusCode)
         .cookie("ChatIo_Token", token, {
             httpOnly: true,
-            maxAge: 18 * 1000 * 60*60*60,
-            secure : true,  
+            maxAge: 18 * 60 * 60 * 1000, // 18 hours in milliseconds
+            secure: true,
             sameSite: "None",
         })
         .json({
