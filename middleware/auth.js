@@ -16,6 +16,7 @@ export const isAuth = async (req, res, next) => {
             message: 'Token value is required',
         });
     };
+    console.log(`MiddleWare token ${token}`);
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         console.log(decoded._id);
