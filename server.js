@@ -13,14 +13,14 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "https://65df7d6cfec83d4f9ce3d3c9--deluxe-meerkat-f8fd22.netlify.app",
+    origin: "https://deluxe-meerkat-f8fd22.netlify.app",
     methods: ["GET", "POST", "DELETE", "PUT"],
     credentials: true,
   },
 });
 app.use(
   cors({
-    origin: "https://65df7d6cfec83d4f9ce3d3c9--deluxe-meerkat-f8fd22.netlify.app",
+    origin: "https://deluxe-meerkat-f8fd22.netlify.app",
     methods: ["GET", "POST", "DELETE", "PUT"],
     credentials: true,
   })
